@@ -1,4 +1,5 @@
-### RUN OVER SINGLE VIDEO FILE
+### RUN OVER FOLDER OF VIDEOS 
+# Excluding those that already have an export folder 
 
 from pathlib import Path
 import argparse
@@ -381,17 +382,23 @@ def main(video_path,
 
 if __name__ == "__main__":    
     parser = argparse.ArgumentParser(description="Process a video with Cellpose segmentation.")
-    parser.add_argument("--video", type=str, help="Path to the input video file")
+    parser.add_argument("--video-folder", type=str, help="Path to the input video folder")
     parser.add_argument("--model", type=str, help="Path to the Cellpose model")
     parser.add_argument("--max-frames", type=int, default=None, help="Maximum number of frames to process")
 
     args = parser.parse_args()
 
-    video_path = args.video if args.video else test_video_path
+    video_folder = args.video_folder
     model_path = args.model if args.model else cp_model
     max_frames = args.max_frames
 
-    
-
-    #### START PROCESSING ##################################################################################
-    main(video_path, model_path, max_frames)
+    video_folder = Path(video_folder)
+    print(video_folder)
+    video_files = list(video_folder.glob("*.mp4"))
+    print(f'Found {len(video_files)} video files')
+    for video_path in video_files:
+        export_folder = video_path.parent / f"{video_path.stem}_export"
+        if export_folder.exists():
+            print(f"Skipping {video_path.name} (export folder exists)")
+            continue
+        main(video_path, model_path, max_frames)
