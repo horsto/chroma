@@ -23,6 +23,17 @@ video_path = 'your_video_path.mp4'
 zarr_path, parquet_path, video, mask_zarr = load_video_zarr(Path(video_path),
                                                             remove_previous_zarr=False
                                                             )
+# Returns
+# -------
+# zarr_path : pathlib.Path
+#     Path to the Zarr file for storing cell masks.
+# parquet_path : pathlib.Path
+#     Path to the Parquet file for storing cell tracking data.
+# video : FastVideoReader
+#     Video reader object for accessing video frames.
+#     This allows frame by frame access to the video file (logical indexing).
+# mask_zarr : zarr.core.Array or similar
+#     Zarr array object for cell masks, loaded from disk.
 
 export_path = parquet_path.parent
 num_frames = video.shape[0]
